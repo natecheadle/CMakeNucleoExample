@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug F303RE",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/F303RE/Debug/nucleo-F303re.out",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "filterStderr": true,
+            "filterStdout": false,
+            "debugServerArgs": "-f board/st_nucleo_f3.cfg",
+            "preLaunchTask": "Build Debug F303RE",
+            "serverLaunchTimeout": 20000,
+            "setupCommands": [
+                { "text": "-target-select remote localhost:3333", "description": "connect to target", "ignoreFailures": false },
+                { "text": "-file-exec-and-symbols ${workspaceFolder}/build/F303RE/Debug/nucleo-F303RE.out", "description": "load file", "ignoreFailures": false},
+                { "text": "-interpreter-exec console \"monitor endian little\"", "ignoreFailures": false },
+                { "text": "-interpreter-exec console \"monitor reset\"", "ignoreFailures": false },
+                { "text": "-interpreter-exec console \"monitor halt\"", "ignoreFailures": false },
+                { "text": "-interpreter-exec console \"monitor arm semihosting enable\"", "ignoreFailures": false },
+                { "text": "-target-download", "description": "flash target", "ignoreFailures": false }
+            ],
+            "logging": {
+                "moduleLoad": true,
+                "trace": true,
+                "engineLogging": true,
+                "programOutput": true,
+                "exceptions": true
+            },
+            "osx": {
+                "MIMode": "gdb",
+                "MIDebuggerPath": "/usr/local/bin/arm-none-eabi-gdb",
+                "debugServerPath": "openocd"
+            },
+        }
+    ]
+}
