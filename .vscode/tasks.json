@@ -4,19 +4,25 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Generate CMake Cache F303RE",
+            "label": "Create Output Directory",
+            "type": "shell",
+            "command": "mkdir -p ${workspaceRoot}/build/${input:BUILD_TARGET}/${input:BUILD_TYPE}"
+        },
+        {
+            "label": "Generate CMake Cache",
             "type": "shell",
             "group": "build",
-            "command": "cmake -DCMAKE_TOOLCHAIN_FILE=../../../arm-none-eabi-gcc.cmake -DCMAKE_BUILD_TYPE=Release ../../..",
+            "command": "cmake -DCMAKE_TOOLCHAIN_FILE=../../../arm-none-eabi-gcc.cmake -DBUILD_TARGET:STRING=${input:BUILD_TARGET} -DCMAKE_BUILD_TYPE=${input:BUILD_TYPE} ../../..",
             "problemMatcher": [
                 "$gcc"
             ],
             "options": {
-                "cwd": "${workspaceRoot}/build/F303RE/Release"
-              }
+                "cwd": "${workspaceRoot}/build/${input:BUILD_TARGET}/${input:BUILD_TYPE}"
+            },
+            "dependsOn": "Create Output Directory"
         },
         {
-            "label": "Build F303RE",
+            "label": "Build Target",
             "type": "shell",
             "group": "build",
             "command": "cmake --build . -- -j 4",
@@ -24,34 +30,43 @@
                 "$gcc"
             ],
             "options": {
-                "cwd": "${workspaceRoot}/build/F303RE/Release"
+                "cwd": "${workspaceRoot}/build/${input:BUILD_TARGET}/${input:BUILD_TYPE}"
             },
-            "dependsOn": "Generate CMake Cache F303RE"
+            "dependsOn": "Generate CMake Cache"
         },
         {
-            "label": "Generate CMake Cache Debug F303RE",
+            "label": "Rebuild Target",
             "type": "shell",
-            "group": "build",
-            "command": "cmake -DCMAKE_TOOLCHAIN_FILE=../../../arm-none-eabi-gcc.cmake -DCMAKE_BUILD_TYPE=Debug ../../..",
-            "problemMatcher": [
-                "$gcc"
+            "dependsOn": [
+                "Clean Output",
+                "Build Target"
             ],
-            "options": {
-                "cwd": "${workspaceRoot}/build/F303RE/Debug"
-              }
+            "problemMatcher": []
         },
         {
-            "label": "Build Debug F303RE",
+            "label": "Clean Output",
             "type": "shell",
             "group": "build",
-            "command": "cmake --build . -- -j 4",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "options": {
-                "cwd": "${workspaceRoot}/build/F303RE/Debug"
-            },
-            "dependsOn": "Generate CMake Cache Debug F303RE"
+            "command": "rm -rf ${workspaceRoot}/build/"
+        }
+    ],
+    "inputs": [
+        {
+          "id": "BUILD_TYPE",
+          "type": "pickString",
+          "description": "Build for Debug or Release",
+          "options": [
+              "Debug",
+              "Release"
+          ]
+        },
+        {
+            "id": "BUILD_TARGET",
+            "type": "pickString",
+            "description": "Build Target (ex. F303RE)",
+            "options": [
+                "F303RE"
+            ]
         }
     ]
 }

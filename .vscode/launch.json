@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug F303RE",
+            "name": "Debug Target",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/F303RE/Debug/nucleo-F303re.out",
+            "program": "${workspaceFolder}/build/${input:BUILD_TARGET}/${input:BUILD_TYPE}/${input:BUILD_TARGET}/NUCLEO-${input:BUILD_TARGET}.out",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
@@ -17,11 +17,11 @@
             "filterStderr": true,
             "filterStdout": false,
             "debugServerArgs": "-f board/st_nucleo_f3.cfg",
-            "preLaunchTask": "Build Debug F303RE",
+            "preLaunchTask": "Build Target",
             "serverLaunchTimeout": 20000,
             "setupCommands": [
                 { "text": "-target-select remote localhost:3333", "description": "connect to target", "ignoreFailures": false },
-                { "text": "-file-exec-and-symbols ${workspaceFolder}/build/F303RE/Debug/nucleo-F303RE.out", "description": "load file", "ignoreFailures": false},
+                { "text": "-file-exec-and-symbols ${workspaceFolder}/build/${input:BUILD_TARGET}/${input:BUILD_TYPE}/${input:BUILD_TARGET}/NUCLEO-${input:BUILD_TARGET}.out", "description": "load file", "ignoreFailures": false},
                 { "text": "-interpreter-exec console \"monitor endian little\"", "ignoreFailures": false },
                 { "text": "-interpreter-exec console \"monitor reset\"", "ignoreFailures": false },
                 { "text": "-interpreter-exec console \"monitor halt\"", "ignoreFailures": false },
@@ -40,6 +40,25 @@
                 "MIDebuggerPath": "/usr/local/bin/arm-none-eabi-gdb",
                 "debugServerPath": "openocd"
             },
+        }
+    ],
+    "inputs": [
+        {
+          "id": "BUILD_TYPE",
+          "type": "pickString",
+          "description": "Build for Debug or Release",
+          "options": [
+              "Debug",
+              "Release"
+          ]
+        },
+        {
+            "id": "BUILD_TARGET",
+            "type": "pickString",
+            "description": "Build Target (ex. F303RE)",
+            "options": [
+                "F303RE"
+            ]
         }
     ]
 }
