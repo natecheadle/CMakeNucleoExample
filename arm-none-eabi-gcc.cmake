@@ -18,9 +18,36 @@ execute_process(
 get_filename_component(ARM_TOOLCHAIN_DIR ${BINUTILS_PATH} DIRECTORY)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
+set(FLOAT_ABI "hard" CACHE STRING "Specifies which floating-point ABI to use")
+set_property(CACHE FLOAT_ABI PROPERTY STRINGS soft softfp hard)
+
+set(FLOAT_FLAGS "-mfloat-abi=${FLOAT_ABI}")
+if(FLOAT_ABI STREQUAL "hard")
+	set(FLOAT_FLAGS ${FLOAT_FLAGS} -mfpu=fpv4-sp-d16)
+else()
+	set(FLOAT_FLAGS -msoft-float)
+endif()
+
 set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})
 set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++)
+
+set(arm_compile_link_options
+    -mcpu=cortex-m4
+    -mthumb
+    -mthumb-interwork
+    -mlittle-endian
+    -fsingle-precision-constant
+    -Wdouble-promotion
+    ${FLOAT_FLAGS}
+    -specs=nosys.specs
+)
+
+add_compile_options(${arm_compile_link_options})
+
+string(REPLACE ";" " " CMAKE_C_LINK_FLAGS "${arm_compile_link_options}")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR})
 
 set(CMAKE_OBJCOPY ${ARM_TOOLCHAIN_DIR}/${TOOLCHAIN_PREFIX}objcopy CACHE INTERNAL "objcopy tool")
 set(CMAKE_SIZE_UTIL ${ARM_TOOLCHAIN_DIR}/${TOOLCHAIN_PREFIX}size CACHE INTERNAL "size tool")

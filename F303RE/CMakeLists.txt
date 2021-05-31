@@ -70,34 +70,10 @@ target_include_directories(${EXECUTABLE} PRIVATE
         Drivers/CMSIS/Device/ST/STM32F3xx/Include
         Drivers/CMSIS/Include
         )
-
-target_compile_options(${EXECUTABLE} PRIVATE
-        -mcpu=cortex-m4
-        -mthumb
-        -mfpu=fpv4-sp-d16
-        -mfloat-abi=hard
-
-        -fdata-sections
-        -ffunction-sections
-
-        -Wall
-
-        $<$<CONFIG:Debug>:-Og>
-        )
-
+        
 target_link_options(${EXECUTABLE} PRIVATE
-        -T${CMAKE_SOURCE_DIR}/F303RE/STM32F303RETx_FLASH.ld
-        -mcpu=cortex-m4
-        -mthumb
-        -mfpu=fpv4-sp-d16
-        -mfloat-abi=hard
-        -specs=nano.specs
-        -lc
-        -lm
-        -lnosys
-        -Wl,-Map=${PROJECT_NAME}.map,--cref
-        -Wl,--gc-sections
-        )
+        -T${CMAKE_SOURCE_DIR}/${BUILD_TARGET}/STM32F303RETx_FLASH.ld
+)
 
 # Print executable size
 add_custom_command(TARGET ${EXECUTABLE}
