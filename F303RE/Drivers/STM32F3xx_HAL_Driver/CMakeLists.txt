@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(stm32f3xx_hal)
-include(Sources.cmake)
+include(HALSources.cmake)
 add_library(${PROJECT_NAME} STATIC ${stm32f3xx_hal_sources})
 target_link_libraries(${PROJECT_NAME} cmsis)
 target_include_directories(${PROJECT_NAME} PUBLIC 

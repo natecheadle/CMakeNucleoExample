@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(CMSIS)
-include(dsp_lib.cmake)
-add_library(cmsis_dsp STATIC ${cmsis_dsp_sources})
-target_include_directories(cmsis_dsp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Include)
-if(FLOAT_ABI STREQUAL hard)
-	target_compile_definitions(cmsis_dsp PUBLIC -D__FPU_PRESENT)
-endif()
-target_compile_definitions(cmsis_dsp PUBLIC -DARM_MATH_CM4)
+
+add_subdirectory(DSP)
+add_subdirectory(NN)
 
 set(STM32_PLATFORM "STM32F303xE" CACHE STRING "Target microprocessor platform")
 set_property(CACHE STM32_PLATFORM PROPERTY STRINGS 
