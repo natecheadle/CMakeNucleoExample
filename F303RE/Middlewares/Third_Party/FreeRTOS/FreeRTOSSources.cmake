@@ -1,0 +1,17 @@
+set(free_rtos_sources
+    Source/list.c
+    Source/stream_buffer.c
+    Source/portable/GCC/ARM_CM4F/port.c
+    Source/portable/MemMang/heap_3.c
+    Source/portable/MemMang/heap_4.c
+    Source/portable/MemMang/heap_5.c
+    Source/portable/MemMang/heap_1.c
+    Source/portable/MemMang/heap_2.c
+    Source/queue.c
+    Source/timers.c
+    Source/CMSIS_RTOS_V2/cmsis_os1.c
+    Source/CMSIS_RTOS_V2/cmsis_os2.c
+    Source/tasks.c
+    Source/event_groups.c
+    Source/croutine.c
+)

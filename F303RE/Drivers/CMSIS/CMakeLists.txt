@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 project(CMSIS)
 
 add_subdirectory(DSP)
@@ -38,9 +38,10 @@ elseif(STM32_PLATFORM STREQUAL STM32F398xx)
 endif()
 
 enable_language(ASM)
-add_library(cmsis STATIC Device/ST/STM32F3xx/Source/Templates/gcc/startup_${cmsis_startup}.s Device/ST/STM32F4xx/Source/Templates/system_stm32f3xx.c)
-target_compile_definitions(cmsis PUBLIC -D${STM32_PLATFORM})
-target_include_directories(cmsis PUBLIC 
+add_library(${PROJECT_NAME} STATIC Device/ST/STM32F3xx/Source/Templates/gcc/startup_${cmsis_startup}.s Device/ST/STM32F3xx/Source/Templates/system_stm32f3xx.c)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -D${STM32_PLATFORM})
+target_link_libraries(${PROJECT_NAME} DSP)
+target_include_directories(${PROJECT_NAME} PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}/Device/ST/STM32F3xx/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/Include
 )

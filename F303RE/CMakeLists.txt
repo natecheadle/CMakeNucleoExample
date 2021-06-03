@@ -1,4 +1,4 @@
-
+cmake_minimum_required(VERSION 3.20)
 
 project(NUCLEO-${BUILD_TARGET})
 
@@ -8,63 +8,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
-set(STM32CUBEMX_GENERATED_FILES    
+add_subdirectory(Middlewares)
+add_subdirectory(Drivers)
 
-        Inc/main.h
-        Inc/stm32f3xx_hal_conf.h
-        Inc/stm32f3xx_it.h
-
-        Src/main.c
-        Src/freertos.c
-        Src/stm32f3xx_it.c
-        Src/stm32f3xx_hal_msp.c
-        Src/stm32f3xx_hal_timebase_tim.c
-        Src/system_stm32f3xx.c
-
-        Middlewares/Third_Party/FreeRTOS/Source/croutine.c
-        Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
-        Middlewares/Third_Party/FreeRTOS/Source/list.c
-        Middlewares/Third_Party/FreeRTOS/Source/queue.c
-        Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
-        Middlewares/Third_Party/FreeRTOS/Source/tasks.c
-        Middlewares/Third_Party/FreeRTOS/Source/timers.c
-        Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
-        Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-        Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
-
-        startup_stm32f303xe.s)
-
-set(EXECUTABLE ${PROJECT_NAME}.out)
-
-add_executable(${EXECUTABLE} ${STM32CUBEMX_GENERATED_FILES})
-
-target_compile_definitions(${EXECUTABLE} PRIVATE
-        -DUSE_HAL_DRIVER
-        -DSTM32F303xE
-        )
-
-target_include_directories(${EXECUTABLE} PRIVATE
-        Inc
-        Drivers/STM32F3xx_HAL_Driver/Inc
-        Drivers/STM32F3xx_HAL_Driver/Inc/Legacy
-        Middlewares/Third_Party/FreeRTOS/Source/include
-        Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
-        Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
-        Drivers/CMSIS/Device/ST/STM32F3xx/Include
-        Drivers/CMSIS/Include
-        )
-        
-target_link_options(${EXECUTABLE} PRIVATE
-        -T${CMAKE_SOURCE_DIR}/${BUILD_TARGET}/STM32F303RETx_FLASH.ld
-)
-
-# Print executable size
-add_custom_command(TARGET ${EXECUTABLE}
-        POST_BUILD
-        COMMAND arm-none-eabi-size ${EXECUTABLE})
-
-# Create hex file
-add_custom_command(TARGET ${EXECUTABLE}
-        POST_BUILD
-        COMMAND arm-none-eabi-objcopy -O ihex ${EXECUTABLE} ${PROJECT_NAME}.hex
-        COMMAND arm-none-eabi-objcopy -O binary ${EXECUTABLE} ${PROJECT_NAME}.bin)

@@ -1,17 +1,17 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 project(stm32f3xx_hal)
 include(HALSources.cmake)
 add_library(${PROJECT_NAME} STATIC ${stm32f3xx_hal_sources})
-target_link_libraries(${PROJECT_NAME} cmsis)
+target_link_libraries(${PROJECT_NAME} CMSIS)
 target_include_directories(${PROJECT_NAME} PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc 
+	${CMAKE_CURRENT_SOURCE_DIR}/Inc/Legacy
 	${PROJECT_BINARY_DIR}/Inc 
 )
 
 option(HAL_MODULE_ENABLED "Enable HAL module" ON)
 option(HAL_ADC_MODULE_ENABLED "Enable ADC module" ON)
 option(HAL_CAN_MODULE_ENABLED "Enable CAN module" ON)
-option(HAL_CAN_LEGACY_MODULE_ENABLED "Enable CAN LEGACY module" ON)
 option(HAL_CRC_MODULE_ENABLED "Enable CRC module" ON)
 option(HAL_CEC_MODULE_ENABLED "Enable CEC module" ON)
 option(HAL_COMP_MODULE_ENABLED "Enable COMP module" ON)
@@ -49,4 +49,4 @@ option(HAL_SMARTCARD_MODULE_ENABLED "Enable SMARTCARD module" ON)
 option(HAL_WWDG_MODULE_ENABLED "Enable WWDG module" ON)
 option(HAL_CORTEX_MODULE_ENABLED "Enable CORTEX module" ON)
 option(HAL_PCD_MODULE_ENABLED "Enable PCD module" ON)
-configure_file(${PROJECT_SOURCE_DIR}/Inc/stm32f3xx_hal_conf_template.h ${PROJECT_BINARY_DIR}/Inc/stm32f3xx_hal_conf.h)
+configure_file(${PROJECT_SOURCE_DIR}/Inc/stm32f3xx_hal_conf_template.h ${PROJECT_SOURCE_DIR}/Inc/stm32f3xx_hal_conf.h)

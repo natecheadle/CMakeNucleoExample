@@ -110,13 +110,12 @@ to exclude the API function. */
  * by the application thus the correct define need to be enabled from the list
  * below
  *
-//define USE_FreeRTOS_HEAP_1
-//define USE_FreeRTOS_HEAP_2
-//define USE_FreeRTOS_HEAP_3
-//define USE_FreeRTOS_HEAP_4
-//define USE_FreeRTOS_HEAP_5
-
-*/
+ */
+#cmakedefine USE_FreeRTOS_HEAP_1
+#cmakedefine USE_FreeRTOS_HEAP_2
+#cmakedefine USE_FreeRTOS_HEAP_3
+#cmakedefine USE_FreeRTOS_HEAP_4
+#cmakedefine USE_FreeRTOS_HEAP_5
 
 
 /* Cortex-M specific definitions. */
