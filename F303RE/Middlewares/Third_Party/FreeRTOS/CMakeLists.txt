@@ -7,7 +7,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     Source/CMSIS_RTOS_V2
     Source/portable/GCC/ARM_CM4F)
 
-target_link_libraries(${PROJECT_NAME} CMSIS)
+target_link_libraries(${PROJECT_NAME} PUBLIC CMSIS)
 
 option(USE_FreeRTOS_HEAP_1 "FreeRTOS Heap 1" OFF)
 option(USE_FreeRTOS_HEAP_2 "FreeRTOS Heap 2" OFF)
