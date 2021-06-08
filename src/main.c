@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -99,7 +99,9 @@ int main(void)
     /* USER CODE END WHILE */
     HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
-    HAL_Delay(200U);
+    HAL_Delay(1000U);
+    char* _out = "LED2 Toggled\r\n";
+    HAL_UART_Transmit(&huart2, (uint8_t *) _out, strlen(_out), 10);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
