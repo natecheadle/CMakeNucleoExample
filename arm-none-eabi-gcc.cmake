@@ -41,11 +41,13 @@ set(arm_compile_link_options
     -Wdouble-promotion
     ${FLOAT_FLAGS}
     -specs=nosys.specs
+    -fno-exceptions
 )
 
 add_compile_options(${arm_compile_link_options})
 
 string(REPLACE ";" " " CMAKE_C_LINK_FLAGS "${arm_compile_link_options}")
+string(REPLACE ";" " " CMAKE_CXX_LINK_FLAGS "${arm_compile_link_options}")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR})
 

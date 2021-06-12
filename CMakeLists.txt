@@ -6,17 +6,22 @@ set(BUILD_TARGET "F303RE" CACHE STRING "Target (ex F303RE)")
 
 add_subdirectory(${BUILD_TARGET}/Drivers/CMSIS)
 add_subdirectory(${BUILD_TARGET}/Drivers/STM32F3xx_HAL_Driver)
+add_subdirectory(HW_LIB)
 
 project(NUCLEO-${BUILD_TARGET})
 
 enable_language(C ASM)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
 set(STM32CUBEMX_GENERATED_FILES 
-        src/main.c
+        src/main.cpp
         src/stm32f3xx_it.c
         src/stm32f3xx_hal_msp.c
         src/system_stm32f3xx.c)
@@ -26,7 +31,7 @@ set(EXECUTABLE ${PROJECT_NAME}.out)
 add_executable(${EXECUTABLE} ${STM32CUBEMX_GENERATED_FILES})
 
 target_include_directories(${EXECUTABLE} PRIVATE inc)
-target_link_libraries(${EXECUTABLE} CMSIS stm32f3xx_hal DSP)
+target_link_libraries(${EXECUTABLE} CMSIS stm32f3xx_hal DSP HW_LIB)
         
 target_link_options(${EXECUTABLE} PRIVATE
         -T${CMAKE_SOURCE_DIR}/src/STM32F303RETx_FLASH.ld
