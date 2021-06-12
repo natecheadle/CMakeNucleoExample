@@ -218,7 +218,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void EXTI15_10_IRQHandler(void)
+extern "C" void EXTI15_10_IRQHandler(void)
 {
   __HAL_GPIO_EXTI_CLEAR_IT(B1_Pin);
 
