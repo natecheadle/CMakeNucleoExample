@@ -47,7 +47,19 @@
             "label": "Clean Output",
             "type": "shell",
             "group": "build",
-            "command": "rm -rf ${workspaceRoot}/build/"
+            "command": "rm -rf ${workspaceRoot}/build/${input:BUILD_TYPE}"
+        },
+        {
+            "label": "Flash Target",
+            "type": "shell",
+            "command": "/Users/Nate/Applications/STM32/Programmer/STM32CubeProgrammer.app/Contents/MacOs/bin/STM32_Programmer_CLI -c port=SWD freq=4000 -w ${workspaceRoot}/build/${input:BUILD_TARGET}/${input:BUILD_TYPE}/NUCLEO-${input:BUILD_TARGET}.bin 0x8000000",
+            "dependsOn": "Build Target"
+        },
+        {
+            "label": "Flash and Restart Target",
+            "type": "shell",
+            "command": "/Users/Nate/Applications/STM32/Programmer/STM32CubeProgrammer.app/Contents/MacOs/bin/STM32_Programmer_CLI -c port=SWD freq=4000 -rst",
+            "dependsOn": "Flash Target"
         }
     ],
     "inputs": [

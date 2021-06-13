@@ -1,17 +1,17 @@
 #pragma once
 
-#include "IDigitalOutput.h"
 #include <stm32f3xx_hal.h>
 
-#include "../Pins.h"
+#include "IDigitalOutput.h"
+#include "Pins.h"
 
 namespace HW_LIB{
 
-    class Embedded_DigitalOutput : public IDigitalOutput
+    class STM32_DigitalOutput : public IDigitalOutput
     {
     public:
-        Embedded_DigitalOutput(PIN pin, PULL pull = PULL::NONE, FREQUENCY freq = FREQUENCY::LOW);
-        virtual ~Embedded_DigitalOutput();
+        STM32_DigitalOutput(PIN pin, PULL pull = PULL::NONE, FREQUENCY freq = FREQUENCY::LOW);
+        virtual ~STM32_DigitalOutput();
 
         void Write(bool level) final;
         void Toggle() final;

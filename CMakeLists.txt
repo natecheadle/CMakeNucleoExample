@@ -6,7 +6,7 @@ set(BUILD_TARGET "F303RE" CACHE STRING "Target (ex F303RE)")
 
 add_subdirectory(${BUILD_TARGET}/Drivers/CMSIS)
 add_subdirectory(${BUILD_TARGET}/Drivers/STM32F3xx_HAL_Driver)
-add_subdirectory(HW_LIB)
+add_subdirectory(CPP_HAL)
 
 project(NUCLEO-${BUILD_TARGET})
 
@@ -31,7 +31,7 @@ set(EXECUTABLE ${PROJECT_NAME}.out)
 add_executable(${EXECUTABLE} ${STM32CUBEMX_GENERATED_FILES})
 
 target_include_directories(${EXECUTABLE} PRIVATE inc)
-target_link_libraries(${EXECUTABLE} CMSIS stm32f3xx_hal DSP HW_LIB)
+target_link_libraries(${EXECUTABLE} CMSIS stm32f3xx_hal DSP CPP_HAL)
         
 target_link_options(${EXECUTABLE} PRIVATE
         -T${CMAKE_SOURCE_DIR}/src/STM32F303RETx_FLASH.ld

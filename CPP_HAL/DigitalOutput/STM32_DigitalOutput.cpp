@@ -1,9 +1,9 @@
-#include "Embedded_DigitalOutput.h"
+#include "STM32_DigitalOutput.h"
 
 
 namespace HW_LIB{
 
-    Embedded_DigitalOutput::Embedded_DigitalOutput(PIN pin, PULL pull, FREQUENCY freq) :
+    STM32_DigitalOutput::STM32_DigitalOutput(PIN pin, PULL pull, FREQUENCY freq) :
         m_AssignedPin(pin),
         m_ConfiguredPull(pull),
         m_ConfiguredFrequency(freq),
@@ -46,22 +46,22 @@ namespace HW_LIB{
         Write(false);
     }
 
-    Embedded_DigitalOutput::~Embedded_DigitalOutput()
+    STM32_DigitalOutput::~STM32_DigitalOutput()
     {
         HAL_GPIO_DeInit(m_HALPort, m_HALPin);
     }
 
-    void Embedded_DigitalOutput::Write(bool level)
+    void STM32_DigitalOutput::Write(bool level)
     {
         HAL_GPIO_WritePin(m_HALPort, m_HALPin, level ? GPIO_PIN_SET : GPIO_PIN_RESET);
     }
 
-    void Embedded_DigitalOutput::Toggle()
+    void STM32_DigitalOutput::Toggle()
     {
         HAL_GPIO_TogglePin(m_HALPort, m_HALPin);
     }
 
-    GPIO_TypeDef* Embedded_DigitalOutput::GetHALPort(PIN pin)
+    GPIO_TypeDef* STM32_DigitalOutput::GetHALPort(PIN pin)
     {
         switch (pin)
         {
@@ -121,7 +121,7 @@ namespace HW_LIB{
         return nullptr;
     }
 
-    unsigned int Embedded_DigitalOutput::GetHALPin(PIN pin)
+    unsigned int STM32_DigitalOutput::GetHALPin(PIN pin)
     {
         switch(pin)
         {
