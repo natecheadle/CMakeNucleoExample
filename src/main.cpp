@@ -23,7 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
-#include <DigitalOutput/STM32_DigitalOutput.h>
+#include <GPIO/DigitalOutput/STM32_DigitalOutput.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,12 +87,14 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_USART2_UART_Init();
+  
   /* USER CODE BEGIN 2 */
-  HW_LIB::STM32_DigitalOutput LED2(HW_LIB::PIN::PA_5);
+  CPP_HAL::STM32_DigitalOutput LED2(CPP_HAL::PIN::PA_5);
   Multiplier = 1;
   SleepTime = Multiplier * 200;
+  
+  MX_GPIO_Init();
+  MX_USART2_UART_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */

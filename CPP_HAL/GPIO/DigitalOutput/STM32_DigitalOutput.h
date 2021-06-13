@@ -5,7 +5,7 @@
 #include "IDigitalOutput.h"
 #include "Pins.h"
 
-namespace HW_LIB{
+namespace CPP_HAL{
 
     class STM32_DigitalOutput : public IDigitalOutput
     {

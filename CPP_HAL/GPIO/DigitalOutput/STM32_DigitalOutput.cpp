@@ -1,7 +1,7 @@
 #include "STM32_DigitalOutput.h"
+#include "../STM32_GPIO_Setup.h"
 
-
-namespace HW_LIB{
+namespace CPP_HAL{
 
     STM32_DigitalOutput::STM32_DigitalOutput(PIN pin, PULL pull, FREQUENCY freq) :
         m_AssignedPin(pin),
@@ -11,6 +11,7 @@ namespace HW_LIB{
         m_HALPort(GetHALPort(pin))
 
     {
+        STM32_GPIO_Setup::InitClock();
         GPIO_InitTypeDef GPIO_InitStruct = {0};
 
         GPIO_InitStruct.Pin = GetHALPin(pin);

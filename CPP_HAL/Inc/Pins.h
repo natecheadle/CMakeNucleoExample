@@ -1,6 +1,6 @@
 #pragma once
 
-namespace HW_LIB {
+namespace CPP_HAL {
     enum class PULL
     {
         NONE,

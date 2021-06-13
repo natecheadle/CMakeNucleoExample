@@ -1,4 +1,4 @@
-namespace HW_LIB {
+namespace CPP_HAL {
     class IDigitalOutput
     {
     public:

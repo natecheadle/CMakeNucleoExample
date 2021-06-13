@@ -1,3 +1,4 @@
 set(CppHalSrcs 
-    DigitalOutput/STM32_DigitalOutput.cpp
+    GPIO/DigitalOutput/STM32_DigitalOutput.cpp
+    GPIO/STM32_GPIO_Setup.cpp
 )
