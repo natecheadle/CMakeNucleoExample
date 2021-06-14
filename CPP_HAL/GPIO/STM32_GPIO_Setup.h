@@ -7,5 +7,7 @@ namespace CPP_HAL {
         static bool IsInitialized;
     public:
         static void InitClock();
+        static GPIO_TypeDef* GetHALPort(PIN pin);
+        static uint32_t GetHALPin(PIN pin);
     };
 }

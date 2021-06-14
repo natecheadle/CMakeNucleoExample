@@ -35,19 +35,19 @@
             "dependsOn": "Generate CMake Cache"
         },
         {
-            "label": "Rebuild Target",
-            "type": "shell",
-            "dependsOn": [
-                "Clean Output",
-                "Build Target"
-            ],
-            "problemMatcher": []
-        },
-        {
             "label": "Clean Output",
             "type": "shell",
             "group": "build",
-            "command": "rm -rf ${workspaceRoot}/build/${input:BUILD_TYPE}"
+            "command": "rm -rf ${workspaceRoot}/build/${input:BUILD_TARGET}/${input:BUILD_TYPE}"
+        },
+        {
+            "label": "Rebuild Target",
+            "type": "shell",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean Output",
+                "Build Target"
+            ]
         },
         {
             "label": "Flash Target",

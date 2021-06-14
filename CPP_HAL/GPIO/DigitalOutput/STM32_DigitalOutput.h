@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <stm32f3xx_hal.h>
 
 #include "IDigitalOutput.h"
@@ -21,14 +22,11 @@ namespace CPP_HAL{
         FREQUENCY GetFrequency() { return m_ConfiguredFrequency; }
 
     private:
-        GPIO_TypeDef* GetHALPort(PIN pin);
-        unsigned int GetHALPin(PIN pin);
-
         const PIN m_AssignedPin;
         const PULL m_ConfiguredPull;
         const FREQUENCY m_ConfiguredFrequency;
 
-        const unsigned int m_HALPin;
+        const uint32_t m_HALPin;
         GPIO_TypeDef* const m_HALPort;
     };
 }
