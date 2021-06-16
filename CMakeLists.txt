@@ -2,13 +2,11 @@ project("CMakeNucleoExample")
 
 cmake_minimum_required(VERSION 3.15.3)
 
-set(BUILD_TARGET "F303RE" CACHE STRING "Target (ex F303RE)")
-
-add_subdirectory(STM32_F3/Drivers/CMSIS)
-add_subdirectory(STM32_F3/Drivers/STM32F3xx_HAL_Driver)
+add_subdirectory(STM32_F3/cmsis)
+add_subdirectory(STM32_F3/hal)
 add_subdirectory(CPP_HAL)
 
-project(NUCLEO-${BUILD_TARGET})
+project(NUCLEO-${STM32_PLATFORM})
 
 enable_language(C ASM)
 set(CMAKE_CXX_STANDARD 11)
@@ -31,7 +29,7 @@ set(EXECUTABLE ${PROJECT_NAME}.out)
 add_executable(${EXECUTABLE} ${STM32CUBEMX_GENERATED_FILES})
 
 target_include_directories(${EXECUTABLE} PRIVATE inc)
-target_link_libraries(${EXECUTABLE} CMSIS stm32f3xx_hal DSP CPP_HAL)
+target_link_libraries(${EXECUTABLE} cmsis st_hal dsp CPP_HAL)
         
 target_link_options(${EXECUTABLE} PRIVATE
         -T${CMAKE_SOURCE_DIR}/src/STM32F303RETx_FLASH.ld
