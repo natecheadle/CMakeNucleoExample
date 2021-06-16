@@ -89,7 +89,7 @@ int main(void)
   /* Initialize all configured peripherals */
   
   /* USER CODE BEGIN 2 */
-  CPP_HAL::STM32_DigitalOutput LED2(CPP_HAL::PIN::PA_5);
+  CPP_HAL::STM32_DigitalOutput LED2(CPP_HAL::DO_Pin(CPP_HAL::Pin_ID::PA_5));
   Multiplier = 1;
   SleepTime = Multiplier * 200;
   

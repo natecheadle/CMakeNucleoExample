@@ -1,21 +1,7 @@
 #pragma once
 
 namespace CPP_HAL {
-    enum class PULL
-    {
-        NONE,
-        UP,
-        DOWN
-    };
-
-    enum class FREQUENCY
-    {
-        LOW,
-        MEDIUM,
-        HIGH
-    };
-
-    enum class PIN
+    enum class Pin_ID
     {
         PA_0,
         PA_1,
@@ -66,6 +52,8 @@ namespace CPP_HAL {
         PC_12,
         PC_13,
         PC_14,
-        PC_15
+        PC_15,
+
+        SIZE
     };
 }
