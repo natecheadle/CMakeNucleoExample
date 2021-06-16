@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.15.3)
 
 set(BUILD_TARGET "F303RE" CACHE STRING "Target (ex F303RE)")
 
-add_subdirectory(${BUILD_TARGET}/Drivers/CMSIS)
-add_subdirectory(${BUILD_TARGET}/Drivers/STM32F3xx_HAL_Driver)
+add_subdirectory(STM32_F3/Drivers/CMSIS)
+add_subdirectory(STM32_F3/Drivers/STM32F3xx_HAL_Driver)
 add_subdirectory(CPP_HAL)
 
 project(NUCLEO-${BUILD_TARGET})
