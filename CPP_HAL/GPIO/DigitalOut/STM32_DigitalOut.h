@@ -3,16 +3,16 @@
 #include <cstdint>
 #include <stm32f3xx_hal.h>
 
-#include "IDigitalOutput.h"
+#include "IDigitalOut.h"
 #include "../Pins/DO_Pin.h"
 
 namespace CPP_HAL{
 
-    class STM32_DigitalOutput : public IDigitalOutput
+    class STM32_DigitalOut : public IDigitalOut
     {
     public:
-        STM32_DigitalOutput(DO_Pin pin);
-        virtual ~STM32_DigitalOutput();
+        STM32_DigitalOut(DO_Pin pin);
+        virtual ~STM32_DigitalOut();
 
         void Write(bool level) final;
         void Toggle() final;

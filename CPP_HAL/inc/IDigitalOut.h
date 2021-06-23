@@ -1,8 +1,8 @@
 namespace CPP_HAL {
-    class IDigitalOutput
+    class IDigitalOut
     {
     public:
-        virtual ~IDigitalOutput() = default;
+        virtual ~IDigitalOut() = default;
         virtual void Write(bool level) = 0;
         virtual void Toggle() = 0;
     };

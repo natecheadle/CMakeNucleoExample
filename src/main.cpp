@@ -23,7 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
-#include <GPIO/DigitalOutput/STM32_DigitalOutput.h>
+#include <GPIO/DigitalOut/STM32_DigitalOut.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -89,7 +89,7 @@ int main(void)
   /* Initialize all configured peripherals */
   
   /* USER CODE BEGIN 2 */
-  CPP_HAL::STM32_DigitalOutput LED2(CPP_HAL::DO_Pin(CPP_HAL::Pin_ID::PA_5));
+  CPP_HAL::STM32_DigitalOut LED2(CPP_HAL::DO_Pin(CPP_HAL::Pin_ID::PA_5));
   Multiplier = 1;
   SleepTime = Multiplier * 200;
   
