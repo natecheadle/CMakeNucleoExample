@@ -1,4 +1,4 @@
-#include "STM32_DigitalOutput.h"
+#include "STM32_DigitalOut.h"
 
 namespace CPP_HAL{
 
