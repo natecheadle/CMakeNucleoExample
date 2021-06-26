@@ -21,22 +21,22 @@ namespace CPP_HAL
         }
         else if(GPIOPort == GPIOB && !s_ClockInitialized.at(size_t(Port::B)))
         {
-            __HAL_RCC_GPIOA_CLK_ENABLE();
+            __HAL_RCC_GPIOB_CLK_ENABLE();
             s_ClockInitialized.at(size_t(Port::B)) = true;
         }
         else if(GPIOPort == GPIOC && !s_ClockInitialized.at(size_t(Port::C)))
         {
-            __HAL_RCC_GPIOA_CLK_ENABLE();
+            __HAL_RCC_GPIOC_CLK_ENABLE();
             s_ClockInitialized.at(size_t(Port::C)) = true;
         }
         else if(GPIOPort == GPIOD && !s_ClockInitialized.at(size_t(Port::D)))
         {
-            __HAL_RCC_GPIOA_CLK_ENABLE();
+            __HAL_RCC_GPIOD_CLK_ENABLE();
             s_ClockInitialized.at(size_t(Port::D)) = true;
         }
         else if(GPIOPort == GPIOF && !s_ClockInitialized.at(size_t(Port::F)))
         {
-            __HAL_RCC_GPIOA_CLK_ENABLE();
+            __HAL_RCC_GPIOF_CLK_ENABLE();
             s_ClockInitialized.at(size_t(Port::F)) = true;
         }
     }
