@@ -1,11 +1,15 @@
 #include "STM32_DigitalOut.h"
 
+#include <CPP_HAL.h>
+
 namespace CPP_HAL{
 
     STM32_DigitalOut::STM32_DigitalOut(DO_Pin pin) :
         m_AssignedPin(pin)
 
     {
+        CPP_HAL::Initialize();
+
         GPIO_InitTypeDef GPIO_InitStruct = {0};
 
         GPIO_InitStruct.Pin = m_AssignedPin.GetHALPin();

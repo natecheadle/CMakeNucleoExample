@@ -1,9 +1,11 @@
 #include "STM32_DigitalIn.h"
 
+#include <CPP_HAL.h>
+
 namespace CPP_HAL{
     std::array<std::function<void()>, 15> s_InterruptFunctors;
 
-    std::function<void()> GetFunctor(uint16_t pin)
+    constexpr std::function<void()>& GetFunctor(uint16_t pin) noexcept
     {
         switch(pin)
         {
@@ -24,7 +26,8 @@ namespace CPP_HAL{
             case GPIO_PIN_14: return s_InterruptFunctors.at(14);
             case GPIO_PIN_15: return s_InterruptFunctors.at(15);
         }
-        return nullptr;
+
+        return s_InterruptFunctors.at(0);
     }
 
     void AssignFunctor(const DI_Pin& pin, std::function<void()> functor)
@@ -85,6 +88,8 @@ namespace CPP_HAL{
     STM32_DigitalIn::STM32_DigitalIn(DI_Pin pin) :
         m_AssignedPin(pin)
     {
+        CPP_HAL::Initialize();
+
         GPIO_InitTypeDef GPIO_InitStruct = populateStruct();
         HAL_GPIO_Init(pin.GetHALPort(), &GPIO_InitStruct);
     }
