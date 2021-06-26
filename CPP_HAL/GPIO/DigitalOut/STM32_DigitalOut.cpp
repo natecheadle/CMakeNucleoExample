@@ -36,4 +36,9 @@ namespace CPP_HAL{
     {
         HAL_GPIO_TogglePin(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin());
     }
+
+    bool STM32_DigitalOut::Read()
+    {
+        return HAL_GPIO_ReadPin(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin()) == GPIO_PIN_SET;
+    }
 }

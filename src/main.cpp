@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include <string.h>
 #include <GPIO/DigitalOut/STM32_DigitalOut.h>
+#include <GPIO/DigitalIn/STM32_DigitalIn.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,8 +50,8 @@ UART_HandleTypeDef huart2;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+void RunInterrupt();
 /* USER CODE BEGIN PFP */
 /* USER CODE END PFP */
 
@@ -58,6 +59,7 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN 0 */
 unsigned int SleepTime;
 unsigned int Multiplier;
+
 /* USER CODE END 0 */
 
 /**
@@ -66,39 +68,16 @@ unsigned int Multiplier;
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  
-  /* USER CODE BEGIN 2 */
   CPP_HAL::STM32_DigitalOut LED2(CPP_HAL::DO_Pin(CPP_HAL::Pin_ID::PA_5));
+  CPP_HAL::STM32_DigitalIn BUTTON1(CPP_HAL::DI_Pin(CPP_HAL::Pin_ID::PC_13));
+
   Multiplier = 1;
   SleepTime = Multiplier * 200;
-  
-  MX_GPIO_Init();
+  CPP_HAL::Interrupt buttonInt(RunInterrupt);
+  BUTTON1.AssignInterrupt(buttonInt, CPP_HAL::IDigitalIn::InterruptAssignment::FallingEdge);
   MX_USART2_UART_Init();
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
@@ -107,9 +86,7 @@ int main(void)
     HAL_Delay(SleepTime);
     const char* _out = "LED2 Toggled\r\n";
     HAL_UART_Transmit(&huart2, (uint8_t *) _out, strlen(_out), 10);
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -192,35 +169,13 @@ static void MX_USART2_UART_Init(void)
 
 }
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
+void RunInterrupt()
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-}
-
-/* USER CODE BEGIN 4 */
-extern "C" void EXTI15_10_IRQHandler(void)
-{
-  __HAL_GPIO_EXTI_CLEAR_IT(B1_Pin);
-
   Multiplier = ++Multiplier % 5;
   if(Multiplier == 0)
     Multiplier++;
   SleepTime = Multiplier * 200;
 }
-
-/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.

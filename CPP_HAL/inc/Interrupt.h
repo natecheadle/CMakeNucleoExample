@@ -4,6 +4,7 @@ namespace CPP_HAL {
     class Interrupt
     {
     public:
+        Interrupt() { }
         Interrupt(std::function<void()> functor) :
             m_Functor(functor)
         {

@@ -48,8 +48,8 @@
           "type": "pickString",
           "description": "Build for Debug or Release",
           "options": [
-              "Debug",
-              "Release"
+              "DEBUG",
+              "RELEASE"
           ]
         },
         {
@@ -57,7 +57,19 @@
             "type": "pickString",
             "description": "Build Target (ex. F303RE)",
             "options": [
-                "F303RE"
+                "STM32F3xx",
+                "STM32F301x8",
+                "STM32F302x8",
+                "STM32F302xC",
+                "STM32F302xE",
+                "STM32F303xE",
+                "STM32F318xx",
+                "STM32F328xx",
+                "STM32F334x8",
+                "STM32F358xx",
+                "STM32F373xC",
+                "STM32F378xx",
+                "STM32F398xx"
             ]
         }
     ]

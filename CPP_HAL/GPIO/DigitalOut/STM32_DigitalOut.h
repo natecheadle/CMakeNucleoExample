@@ -15,6 +15,7 @@ namespace CPP_HAL{
         virtual ~STM32_DigitalOut();
 
         void Write(bool level) final;
+        bool Read() final;
         void Toggle() final;
 
         Pin_ID GetPin() { return m_AssignedPin.GetID(); }
