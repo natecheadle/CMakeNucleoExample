@@ -31,17 +31,17 @@ namespace CPP_HAL{
         HAL_GPIO_DeInit(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin());
     }
 
-    void STM32_DigitalOut::Write(bool level)
+    void STM32_DigitalOut::do_write(bool level)
     {
         HAL_GPIO_WritePin(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin(), level ? GPIO_PIN_SET : GPIO_PIN_RESET);
     }
 
-    void STM32_DigitalOut::Toggle()
+    void STM32_DigitalOut::do_toggle()
     {
         HAL_GPIO_TogglePin(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin());
     }
 
-    bool STM32_DigitalOut::Read()
+    bool STM32_DigitalOut::do_read()
     {
         return HAL_GPIO_ReadPin(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin()) == GPIO_PIN_SET;
     }

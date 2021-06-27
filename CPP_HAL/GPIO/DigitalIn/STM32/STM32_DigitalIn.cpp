@@ -94,19 +94,19 @@ namespace CPP_HAL{
         HAL_GPIO_Init(pin.GetHALPort(), &GPIO_InitStruct);
     }
 
-    bool STM32_DigitalIn::Read()
+    bool STM32_DigitalIn::do_read()
     {
-        return false;
+        return HAL_GPIO_ReadPin(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin()) == GPIO_PIN_SET;
     }
 
-    void STM32_DigitalIn::AssignInterrupt(Interrupt interrupt, InterruptAssignment assignment)
+    void STM32_DigitalIn::do_assignInterrupt(const Interrupt& interrupt, DI_InterruptAssignment assignment)
     {
         m_Interrupt = interrupt;
 
         GPIO_InitTypeDef GPIO_InitStruct = populateStruct();
         GPIO_InitStruct.Mode = 
-            assignment == InterruptAssignment::FallingEdge ? GPIO_MODE_IT_FALLING :
-            assignment == InterruptAssignment::RisingEdge ? GPIO_MODE_IT_RISING :
+            assignment == DI_InterruptAssignment::FallingEdge ? GPIO_MODE_IT_FALLING :
+            assignment == DI_InterruptAssignment::RisingEdge ? GPIO_MODE_IT_RISING :
             GPIO_MODE_IT_RISING_FALLING;
 
         HAL_GPIO_Init(m_AssignedPin.GetHALPort(), &GPIO_InitStruct);

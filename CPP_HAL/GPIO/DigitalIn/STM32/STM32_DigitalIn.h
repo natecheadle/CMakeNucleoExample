@@ -6,17 +6,16 @@
 
 #include <stm32f3xx_hal.h>
 
-#include "IDigitalIn.h"
-#include "../Pins/DI_Pin.h"
+#include "../DigitalIn.h"
+#include "../../Pins/DI_Pin.h"
 
 namespace CPP_HAL{
-    class STM32_DigitalIn : public IDigitalIn 
+    class STM32_DigitalIn : public DigitalIn<STM32_DigitalIn>
     {
+        friend DigitalIn;
     public:
         STM32_DigitalIn(DI_Pin pin);
         virtual ~STM32_DigitalIn() = default;
-        bool Read() final;
-        void AssignInterrupt(Interrupt interrupt, InterruptAssignment assignment) final;
 
         DI_Pin GetPin() const { return m_AssignedPin; }
 
@@ -24,6 +23,9 @@ namespace CPP_HAL{
         GPIO_InitTypeDef populateStruct();
         
     private:
+        bool do_read() final;
+        void do_assignInterrupt(const Interrupt& Interrupt, DI_InterruptAssignment assignment) final;
+
         const DI_Pin m_AssignedPin;
         Interrupt m_Interrupt;
     };

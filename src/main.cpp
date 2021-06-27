@@ -1,8 +1,10 @@
 #include "main.h"
 
 #include <string.h>
-#include <GPIO/DigitalOut/STM32_DigitalOut.h>
-#include <GPIO/DigitalIn/STM32_DigitalIn.h>
+#include <GPIO/DigitalOut/STM32/STM32_DigitalOut.h>
+#include <GPIO/DigitalIn/STM32/STM32_DigitalIn.h>
+
+using namespace CPP_HAL;
 
 UART_HandleTypeDef huart2;
 
@@ -14,19 +16,21 @@ unsigned int Multiplier;
 
 int main(void)
 {
-  
-  CPP_HAL::STM32_DigitalOut LED2(CPP_HAL::DO_Pin(CPP_HAL::Pin_ID::PA_5));
-  CPP_HAL::STM32_DigitalIn BUTTON1(CPP_HAL::DI_Pin(CPP_HAL::Pin_ID::PC_13));
+  STM32_DigitalOut LED2(DO_Pin(Pin_ID::PA_5));
+  STM32_DigitalIn BUTTON1(DI_Pin(Pin_ID::PC_13));
+
+  DigitalIn<STM32_DigitalIn> *pButton1 = &BUTTON1;
+  DigitalOut<STM32_DigitalOut> *pLed2 = &LED2;
 
   Multiplier = 1;
   SleepTime = Multiplier * 200;
   CPP_HAL::Interrupt buttonInt(RunInterrupt);
-  BUTTON1.AssignInterrupt(buttonInt, CPP_HAL::IDigitalIn::InterruptAssignment::FallingEdge);
+  pButton1->AssignInterrupt(buttonInt, DI_InterruptAssignment::FallingEdge);
   MX_USART2_UART_Init();
   while (1)
   {
     /* USER CODE END WHILE */
-    LED2.Toggle();
+    pLed2->Toggle();
     
     HAL_Delay(SleepTime);
     const char* _out = "LED2 Toggled\r\n";
