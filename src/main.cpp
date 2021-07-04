@@ -1,6 +1,6 @@
 #include "main.h"
 
-#include <string.h>
+#include <cstring>
 #include <GPIO/DigitalOut/STM32/STM32_DigitalOut.h>
 #include <GPIO/DigitalIn/STM32/STM32_DigitalIn.h>
 
@@ -8,19 +8,19 @@ using namespace CPP_HAL;
 
 UART_HandleTypeDef huart2;
 
-static void MX_USART2_UART_Init(void);
+static void MX_USART2_UART_Init();
 void RunInterrupt();
 
 unsigned int SleepTime;
 unsigned int Multiplier;
 
-int main(void)
+int main()
 {
   STM32_DigitalOut LED2(DO_Pin(Pin_ID::PA_5));
   STM32_DigitalIn BUTTON1(DI_Pin(Pin_ID::PC_13));
 
-  DigitalIn<STM32_DigitalIn> *pButton1 = &BUTTON1;
-  DigitalOut<STM32_DigitalOut> *pLed2 = &LED2;
+  DigitalIn<STM32_DigitalIn> *pButton1 = static_cast<DigitalIn<STM32_DigitalIn>*>(&BUTTON1);
+  DigitalOut<STM32_DigitalOut> *pLed2 = static_cast<DigitalOut<STM32_DigitalOut>*>(&LED2);
 
   Multiplier = 1;
   SleepTime = Multiplier * 200;
