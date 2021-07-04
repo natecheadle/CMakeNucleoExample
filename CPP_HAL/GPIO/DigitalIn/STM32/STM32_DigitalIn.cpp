@@ -30,9 +30,9 @@ namespace CPP_HAL{
         return s_InterruptFunctors.at(0);
     }
 
-    void AssignFunctor(const DI_Pin& pin, std::function<void()> functor)
+    void AssignFunctor(const DI_Pin<STM32_Pin>& pin, std::function<void()> functor)
     {
-        switch(pin.GetHALPin())
+        switch(pin.GetLowLevelPin().GetHALPin())
         {
             case GPIO_PIN_0: 
                 s_InterruptFunctors.at(0) = functor;
@@ -85,18 +85,18 @@ namespace CPP_HAL{
         }
     };
 
-    STM32_DigitalIn::STM32_DigitalIn(DI_Pin pin) :
+    STM32_DigitalIn::STM32_DigitalIn(DI_Pin<STM32_Pin> pin) :
         m_AssignedPin(pin)
     {
         CPP_HAL::Initialize();
 
         GPIO_InitTypeDef GPIO_InitStruct = populateStruct();
-        HAL_GPIO_Init(pin.GetHALPort(), &GPIO_InitStruct);
+        HAL_GPIO_Init(pin.GetLowLevelPin().GetHALPort(), &GPIO_InitStruct);
     }
 
     bool STM32_DigitalIn::do_read()
     {
-        return HAL_GPIO_ReadPin(m_AssignedPin.GetHALPort(), m_AssignedPin.GetHALPin()) == GPIO_PIN_SET;
+        return HAL_GPIO_ReadPin(m_AssignedPin.GetLowLevelPin().GetHALPort(), m_AssignedPin.GetLowLevelPin().GetHALPin()) == GPIO_PIN_SET;
     }
 
     void STM32_DigitalIn::do_assignInterrupt(const Interrupt& interrupt, DI_InterruptAssignment assignment)
@@ -109,9 +109,9 @@ namespace CPP_HAL{
             assignment == DI_InterruptAssignment::RisingEdge ? GPIO_MODE_IT_RISING :
             GPIO_MODE_IT_RISING_FALLING;
 
-        HAL_GPIO_Init(m_AssignedPin.GetHALPort(), &GPIO_InitStruct);
+        HAL_GPIO_Init(m_AssignedPin.GetLowLevelPin().GetHALPort(), &GPIO_InitStruct);
         AssignFunctor(m_AssignedPin, m_Interrupt.GetFunctor());
-        switch (m_AssignedPin.GetHALPin())
+        switch (m_AssignedPin.GetLowLevelPin().GetHALPin())
         {
         case GPIO_PIN_0:
             HAL_NVIC_EnableIRQ(EXTI0_IRQn);
@@ -150,12 +150,12 @@ namespace CPP_HAL{
     {
         GPIO_InitTypeDef GPIO_InitStruct = {0};
         /*Configure GPIO pin : B1_Pin */
-        GPIO_InitStruct.Pin = m_AssignedPin.GetHALPin();
+        GPIO_InitStruct.Pin = m_AssignedPin.GetLowLevelPin().GetHALPin();
         GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
         GPIO_InitStruct.Pull =
-            m_AssignedPin.GetPull() == DI_Pin::Pull::NoPull ? GPIO_NOPULL : 
-            m_AssignedPin.GetPull() == DI_Pin::Pull::PullDown ? GPIO_PULLDOWN : 
-            m_AssignedPin.GetPull() == DI_Pin::Pull::PullUp ? GPIO_PULLUP : GPIO_NOPULL;
+            m_AssignedPin.GetPull() == DI_Pin<STM32_Pin>::Pull::NoPull ? GPIO_NOPULL :
+            m_AssignedPin.GetPull() == DI_Pin<STM32_Pin>::Pull::PullDown ? GPIO_PULLDOWN :
+            m_AssignedPin.GetPull() == DI_Pin<STM32_Pin>::Pull::PullUp ? GPIO_PULLUP : GPIO_NOPULL;
 
         return GPIO_InitStruct;
     }

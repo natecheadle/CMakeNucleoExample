@@ -1,18 +1,17 @@
-#include "Pin.h"
-
-namespace CPP_HAL 
+#include "STM32_Pin.h"
+namespace CPP_HAL
 {
-    std::array<bool, size_t(Pin::Port::SIZE)> Pin::s_ClockInitialized = {false};
+    std::array<bool, size_t(STM32_Pin::Port::SIZE)> STM32_Pin::s_ClockInitialized = {false};
 
-    Pin::Pin(Pin_ID id) :
-        m_ID(id),
+    STM32_Pin::STM32_Pin(Pin_ID id) :
+        LowLevelPin(id),
         m_Pin(std::get<1>(PinLookup(id))),
         m_Port(std::get<0>(PinLookup(id)))
     {
-        Pin::InitGPIOClock(m_Port);
+        InitGPIOClock(m_Port);
     }
 
-    void Pin::InitGPIOClock(GPIO_TypeDef * GPIOPort)
+    void STM32_Pin::InitGPIOClock(GPIO_TypeDef * GPIOPort)
     {
         if(GPIOPort == GPIOA && !s_ClockInitialized.at(size_t(Port::A)))
         {

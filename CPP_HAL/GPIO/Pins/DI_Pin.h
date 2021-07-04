@@ -2,7 +2,8 @@
 
 namespace CPP_HAL
 {
-    class DI_Pin : public Pin
+    template<class PlatformPin>
+    class DI_Pin : public Pin<PlatformPin>
     {
     public:
         enum class Pull
@@ -13,7 +14,7 @@ namespace CPP_HAL
         };
 
         DI_Pin(Pin_ID pin, Pull pull = Pull::NoPull) :
-            Pin(pin),
+            Pin<PlatformPin>(pin),
             m_Pull(pull)
         {
             

@@ -5,6 +5,7 @@
 
 #include "../DigitalOut.h"
 #include "../../Pins/DO_Pin.h"
+#include "../../Pins/STM32_Pin.h"
 
 namespace CPP_HAL{
 
@@ -13,17 +14,16 @@ namespace CPP_HAL{
         friend DigitalOut;
 
     public:
-        STM32_DigitalOut(DO_Pin pin);
+        STM32_DigitalOut(DO_Pin<STM32_Pin> pin);
         virtual ~STM32_DigitalOut();
 
-        Pin_ID GetPin() { return m_AssignedPin.GetID(); }
-        DO_Pin::FREQUENCY GetFrequency() { return m_AssignedPin.GetFrequency(); }
+        const DO_Pin<STM32_Pin>& GetPin() const { return m_AssignedPin; }
 
     private:
         virtual void do_write(bool level);
         virtual bool do_read();
         virtual void do_toggle();
 
-        const DO_Pin m_AssignedPin;
+        const DO_Pin<STM32_Pin> m_AssignedPin;
     };
 }

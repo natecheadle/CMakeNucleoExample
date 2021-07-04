@@ -14,8 +14,6 @@ namespace CPP_HAL {
     class DigitalIn
     {
     public:
-        
-
         virtual ~DigitalIn() = default;
         bool Read() { return static_cast<Derived *>(this)->do_read(); }
         void AssignInterrupt(const Interrupt& Interrupt, DI_InterruptAssignment assignment) 

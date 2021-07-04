@@ -16,8 +16,8 @@ unsigned int Multiplier;
 
 int main()
 {
-  STM32_DigitalOut LED2(DO_Pin(Pin_ID::PA_5));
-  STM32_DigitalIn BUTTON1(DI_Pin(Pin_ID::PC_13));
+  STM32_DigitalOut LED2(DO_Pin<STM32_Pin>(Pin_ID::PA_5));
+  STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
 
   DigitalIn<STM32_DigitalIn> *pButton1 = static_cast<DigitalIn<STM32_DigitalIn>*>(&BUTTON1);
   DigitalOut<STM32_DigitalOut> *pLed2 = static_cast<DigitalOut<STM32_DigitalOut>*>(&LED2);
