@@ -1,3 +1,4 @@
+#pragma once
 #include "Pin.h"
 
 namespace CPP_HAL

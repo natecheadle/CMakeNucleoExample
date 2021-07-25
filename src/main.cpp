@@ -3,12 +3,10 @@
 #include <cstring>
 #include <GPIO/DigitalOut/STM32/STM32_DigitalOut.h>
 #include <GPIO/DigitalIn/STM32/STM32_DigitalIn.h>
+#include <Serial/USART/STM32/STM32_PollingUSART.h>
 
 using namespace CPP_HAL;
 
-UART_HandleTypeDef huart2;
-
-static void MX_USART2_UART_Init();
 void RunInterrupt();
 
 unsigned int SleepTime;
@@ -18,6 +16,16 @@ int main()
 {
   STM32_DigitalOut LED2(DO_Pin<STM32_Pin>(Pin_ID::PA_5));
   STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
+  STM32_PollingUSART Serial2(
+          DI_Pin<STM32_Pin>(Pin_ID::PA_3),
+          DO_Pin<STM32_Pin>(Pin_ID::PA_2),
+          PollingUSART<STM32_PollingUSART>::BaudRate::Baud_9600,
+          PollingUSART<STM32_PollingUSART>::WordLength::Bits_8,
+          PollingUSART<STM32_PollingUSART>::StopBits::StopBits_1,
+          PollingUSART<STM32_PollingUSART>::Parity::None,
+          PollingUSART<STM32_PollingUSART>::Mode::TxAndRx,
+          PollingUSART<STM32_PollingUSART>::FlowControlMode::None,
+          PollingUSART<STM32_PollingUSART>::OverSampling::Sixteen);
 
   DigitalIn<STM32_DigitalIn> *pButton1 = static_cast<DigitalIn<STM32_DigitalIn>*>(&BUTTON1);
   DigitalOut<STM32_DigitalOut> *pLed2 = static_cast<DigitalOut<STM32_DigitalOut>*>(&LED2);
@@ -26,7 +34,6 @@ int main()
   SleepTime = Multiplier * 200;
   CPP_HAL::Interrupt buttonInt(RunInterrupt);
   pButton1->AssignInterrupt(buttonInt, DI_InterruptAssignment::FallingEdge);
-  MX_USART2_UART_Init();
   while (1)
   {
     /* USER CODE END WHILE */
@@ -34,25 +41,10 @@ int main()
     
     HAL_Delay(SleepTime);
     const char* _out = "LED2 Toggled\r\n";
-    HAL_UART_Transmit(&huart2, (uint8_t *) _out, strlen(_out), 10);
-  }
-}
-
-static void MX_USART2_UART_Init(void)
-{
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 38400;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    //Error_Handler();
+    Serial2.SendBytes(
+            reinterpret_cast<const uint8_t*>(_out),
+            strlen(_out),
+            std::chrono::milliseconds(10));
   }
 }
 
