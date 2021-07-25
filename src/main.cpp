@@ -34,6 +34,10 @@ int main()
   SleepTime = Multiplier * 200;
   CPP_HAL::Interrupt buttonInt(RunInterrupt);
   pButton1->AssignInterrupt(buttonInt, DI_InterruptAssignment::FallingEdge);
+
+  char receivedData[96];
+  std::fill(&receivedData[0], &receivedData[96], 0x00);
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -41,10 +45,37 @@ int main()
     
     HAL_Delay(SleepTime);
     const char* _out = "LED2 Toggled\r\n";
+
     Serial2.SendBytes(
             reinterpret_cast<const uint8_t*>(_out),
             strlen(_out),
             std::chrono::milliseconds(10));
+/*
+    size_t bytesReceived{0};
+
+    Serial2.ReceiveBytes(
+            reinterpret_cast<uint8_t*>(receivedData),
+            sizeof(receivedData),
+            bytesReceived,
+            std::chrono::milliseconds(2000) );
+
+    if(strlen(receivedData))
+    {
+        const char* _received = "Received: ";
+
+        Serial2.SendBytes(
+                reinterpret_cast<const uint8_t*>(_received),
+                strlen(_received),
+                std::chrono::milliseconds(10));
+
+        Serial2.SendBytes(
+                reinterpret_cast<const uint8_t*>(receivedData),
+                strlen(receivedData),
+                std::chrono::milliseconds(10));
+
+        std::fill(&receivedData[0], &receivedData[96], 0x00);
+    }
+    */
   }
 }
 
