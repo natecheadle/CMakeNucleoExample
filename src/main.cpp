@@ -17,9 +17,9 @@ int main()
   STM32_DigitalOut LED2(DO_Pin<STM32_Pin>(Pin_ID::PA_5));
   STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
   STM32_PollingUSART Serial2(
-          DI_Pin<STM32_Pin>(Pin_ID::PA_3),
-          DO_Pin<STM32_Pin>(Pin_ID::PA_2),
-          PollingUSART<STM32_PollingUSART>::BaudRate::Baud_9600,
+          DIO_Pin<STM32_Pin>(Pin_ID::PA_3),
+          DIO_Pin<STM32_Pin>(Pin_ID::PA_2),
+          PollingUSART<STM32_PollingUSART>::BaudRate::Baud_38400,
           PollingUSART<STM32_PollingUSART>::WordLength::Bits_8,
           PollingUSART<STM32_PollingUSART>::StopBits::StopBits_1,
           PollingUSART<STM32_PollingUSART>::Parity::None,

@@ -146,16 +146,16 @@ namespace CPP_HAL{
         }
     }
 
-    GPIO_InitTypeDef STM32_DigitalIn::populateStruct()
+    GPIO_InitTypeDef STM32_DigitalIn::populateStruct() const
     {
         GPIO_InitTypeDef GPIO_InitStruct = {0};
-        /*Configure GPIO pin : B1_Pin */
+
         GPIO_InitStruct.Pin = m_AssignedPin.GetLowLevelPin().GetHALPin();
         GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
         GPIO_InitStruct.Pull =
-            m_AssignedPin.GetPull() == DI_Pin<STM32_Pin>::Pull::NoPull ? GPIO_NOPULL :
-            m_AssignedPin.GetPull() == DI_Pin<STM32_Pin>::Pull::PullDown ? GPIO_PULLDOWN :
-            m_AssignedPin.GetPull() == DI_Pin<STM32_Pin>::Pull::PullUp ? GPIO_PULLUP : GPIO_NOPULL;
+            m_AssignedPin.GetPull() == DIO_PULL::NoPull ? GPIO_NOPULL :
+            m_AssignedPin.GetPull() == DIO_PULL::PullDown ? GPIO_PULLDOWN :
+            m_AssignedPin.GetPull() == DIO_PULL::PullUp ? GPIO_PULLUP : GPIO_NOPULL;
 
         return GPIO_InitStruct;
     }

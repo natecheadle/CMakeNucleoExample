@@ -19,6 +19,9 @@ namespace CPP_HAL{
 
         const DO_Pin<STM32_Pin>& GetPin() const { return m_AssignedPin; }
 
+    protected:
+        virtual GPIO_InitTypeDef populateStruct() const;
+
     private:
         virtual void do_write(bool level);
         virtual bool do_read();

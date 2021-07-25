@@ -1,5 +1,6 @@
 #pragma once
 #include "Pin.h"
+#include "DIO_PULL.h"
 
 namespace CPP_HAL
 {
@@ -7,14 +8,9 @@ namespace CPP_HAL
     class DI_Pin : public Pin<PlatformPin>
     {
     public:
-        enum class Pull
-        {
-            PullUp,
-            PullDown,
-            NoPull
-        };
 
-        DI_Pin(Pin_ID pin, Pull pull = Pull::NoPull) :
+
+        DI_Pin(Pin_ID pin, DIO_PULL pull = DIO_PULL::NoPull) :
             Pin<PlatformPin>(pin),
             m_Pull(pull)
         {
@@ -22,9 +18,9 @@ namespace CPP_HAL
         }
         virtual ~DI_Pin() = default;
 
-        Pull GetPull() const { return m_Pull; }
+        DIO_PULL GetPull() const { return m_Pull; }
 
     private:
-        const Pull m_Pull;
+        const DIO_PULL m_Pull;
     };
 }

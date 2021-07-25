@@ -6,8 +6,7 @@ set(CppHalSrcs
 		GPIO/DigitalOut/STM32/STM32_DigitalOut.cpp
 		GPIO/DigitalIn/STM32/STM32_DigitalIn.cpp
 		GPIO/Pins/STM32_Pin.cpp
-        Serial/USART/STM32/STM32_PollingUSART.cpp
-		)
+        Serial/USART/STM32/STM32_PollingUSART.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${CppHalSrcs})
 target_link_libraries(${PROJECT_NAME} st_hal)
