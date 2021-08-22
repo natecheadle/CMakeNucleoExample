@@ -3,7 +3,7 @@
 #include <cstring>
 #include <GPIO/DigitalOut/STM32/STM32_DigitalOut.h>
 #include <GPIO/DigitalIn/STM32/STM32_DigitalIn.h>
-#include <Serial/USART/STM32/STM32_SynchronousUSART.h>
+#include <Serial/USART/STM32/STM32_AsynchronousUSART.h>
 
 using namespace CPP_HAL;
 
@@ -15,7 +15,7 @@ unsigned int Multiplier;
 int main() {
     STM32_DigitalOut LED2(DO_Pin<STM32_Pin>(Pin_ID::PA_5));
     STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
-    STM32_SynchronousUSART Serial2(
+    STM32_AsynchronousUSART Serial2(
             DIO_Pin<STM32_Pin>(Pin_ID::PA_3),
             DIO_Pin<STM32_Pin>(Pin_ID::PA_2),
             BaudRate::Baud_38400,

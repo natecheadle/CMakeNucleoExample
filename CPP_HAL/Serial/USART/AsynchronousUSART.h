@@ -30,12 +30,12 @@ namespace CPP_HAL {
         Shared::lib::StaticQueue<AsyncTransfer, 16> m_SendMessageQueue;
 
     public:
-        bool SendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout, std::function<void()> f_OnComplete) {
-            return static_cast<Derived *>(this)->do_sendBytes(pData, size, timeout);
+        void SendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout) {
+            static_cast<Derived *>(this)->do_sendBytes(pData, size, timeout);
         }
 
-        void ReceiveBytes(uint8_t *pData, size_t size, std::chrono::milliseconds timeout, std::function<void()> f_OnComplete) {
-            return static_cast<Derived *>(this)->do_receiveBytes(pData, size, timeout);
+        void ReceiveBytes(uint8_t *pData, size_t size, std::chrono::milliseconds timeout) {
+            static_cast<Derived *>(this)->do_receiveBytes(pData, size, timeout);
         }
 
     protected:
@@ -50,7 +50,7 @@ namespace CPP_HAL {
                 USARTBase(baudRate, wordLength, stopBits, parity, mode, flowControlMode, overSampling){
         }
 
-        const AsyncTransfer* allocateBytes(const uint8_t *pData, size_t size, std::function<void()> f_OnComplete)
+        const AsyncTransfer* allocateBytes(const uint8_t *pData, size_t size)
         {
             if(m_SendMessageQueue.Full())
                 return nullptr;
