@@ -1,7 +1,7 @@
-#include "STM32_PollingUSART.h"
+#include "STM32_AsynchronousUSART.h"
 
 namespace CPP_HAL {
-    STM32_PollingUSART::STM32_PollingUSART(
+    STM32_AsynchronousUSART::STM32_AsynchronousUSART(
             DIO_Pin<STM32_Pin> rxPin,
             DIO_Pin<STM32_Pin> txPin,
             BaudRate baudRate,
@@ -11,10 +11,9 @@ namespace CPP_HAL {
             Mode mode,
             FlowControlMode flowControlMode,
             OverSampling overSampling) :
-            PollingUSART(baudRate, wordLength, stopBits, parity, mode, flowControlMode, overSampling),
+            AsynchronousUSART(baudRate, wordLength, stopBits, parity, mode, flowControlMode, overSampling),
             m_RxPin(rxPin),
-            m_TxPin(txPin)
-    {
+            m_TxPin(txPin) {
         GPIO_InitTypeDef GPIO_InitStruct = populateGPIOStruct(m_TxPin);
         HAL_GPIO_Init(m_TxPin.GetLowLevelPin().GetHALPort(), &GPIO_InitStruct);
 
@@ -28,19 +27,24 @@ namespace CPP_HAL {
         }
     }
 
-    bool STM32_PollingUSART::do_sendBytes(const uint8_t* pData, size_t size, std::chrono::milliseconds timeout) {
-        return HAL_UART_Transmit(&m_HUART, const_cast<uint8_t*>(pData), static_cast<uint16_t>(size),
-                          static_cast<uint32_t>(timeout.count())) == HAL_OK;
+    void STM32_AsynchronousUSART::do_sendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout) {
+
+        HAL_UART_Transmit(
+                &m_HUART,
+                const_cast<uint8_t *>(pData),
+                static_cast<uint16_t>(size),
+                static_cast<uint32_t>(timeout.count()));
     }
 
-    bool STM32_PollingUSART::do_receiveBytes(unsigned char *pData, size_t size, size_t &receivedBytes,
-                                             std::chrono::milliseconds timeout) {
-        return HAL_UART_Receive(&m_HUART, pData, static_cast<uint16_t>(size),
-                          static_cast<uint32_t>(timeout.count())) == HAL_OK;
+    void STM32_AsynchronousUSART::do_receiveBytes(unsigned char *pData, size_t size, std::chrono::milliseconds timeout) {
+         HAL_UART_Receive(
+                &m_HUART,
+                pData,
+                static_cast<uint16_t>(size),
+                static_cast<uint32_t>(timeout.count()));
     }
 
-    GPIO_InitTypeDef STM32_PollingUSART::populateGPIOStruct(const DIO_Pin<STM32_Pin>& pin) const
-    {
+    GPIO_InitTypeDef STM32_AsynchronousUSART::populateGPIOStruct(const DIO_Pin<STM32_Pin> &pin) const {
         GPIO_InitTypeDef GPIO_InitStruct = {0};
 
         GPIO_InitStruct.Pin = pin.GetLowLevelPin().GetHALPin();
@@ -59,7 +63,7 @@ namespace CPP_HAL {
         return GPIO_InitStruct;
     }
 
-    UART_HandleTypeDef STM32_PollingUSART::populateUARTStruct() const {
+    UART_HandleTypeDef STM32_AsynchronousUSART::populateUARTStruct() const {
         UART_HandleTypeDef huart{0};
 
         huart.Instance = GetUSARTInstance(m_RxPin.GetID(), m_TxPin.GetID());
@@ -95,7 +99,7 @@ namespace CPP_HAL {
         return huart;
     }
 
-    USART_TypeDef* STM32_PollingUSART::GetUSARTInstance(Pin_ID rxPin, Pin_ID txPin) {
+    USART_TypeDef* STM32_AsynchronousUSART::GetUSARTInstance(Pin_ID rxPin, Pin_ID txPin) {
         switch (rxPin) {
             case Pin_ID::PA_3:
             case Pin_ID::PA_15:

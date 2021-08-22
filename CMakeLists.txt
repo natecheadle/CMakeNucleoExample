@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.15.3)
 add_subdirectory(STM32_F3/cmsis)
 add_subdirectory(STM32_F3/hal)
 add_subdirectory(CPP_HAL)
+add_subdirectory(Shared/lib)
 
 project(NUCLEO-${STM32_PLATFORM})
 

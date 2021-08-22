@@ -3,7 +3,7 @@
 #include <cstring>
 #include <GPIO/DigitalOut/STM32/STM32_DigitalOut.h>
 #include <GPIO/DigitalIn/STM32/STM32_DigitalIn.h>
-#include <Serial/USART/STM32/STM32_PollingUSART.h>
+#include <Serial/USART/STM32/STM32_SynchronousUSART.h>
 
 using namespace CPP_HAL;
 
@@ -12,44 +12,41 @@ void RunInterrupt();
 unsigned int SleepTime;
 unsigned int Multiplier;
 
-int main()
-{
-  STM32_DigitalOut LED2(DO_Pin<STM32_Pin>(Pin_ID::PA_5));
-  STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
-  STM32_PollingUSART Serial2(
-          DIO_Pin<STM32_Pin>(Pin_ID::PA_3),
-          DIO_Pin<STM32_Pin>(Pin_ID::PA_2),
-          PollingUSART<STM32_PollingUSART>::BaudRate::Baud_38400,
-          PollingUSART<STM32_PollingUSART>::WordLength::Bits_8,
-          PollingUSART<STM32_PollingUSART>::StopBits::StopBits_1,
-          PollingUSART<STM32_PollingUSART>::Parity::None,
-          PollingUSART<STM32_PollingUSART>::Mode::TxAndRx,
-          PollingUSART<STM32_PollingUSART>::FlowControlMode::None,
-          PollingUSART<STM32_PollingUSART>::OverSampling::Sixteen);
+int main() {
+    STM32_DigitalOut LED2(DO_Pin<STM32_Pin>(Pin_ID::PA_5));
+    STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
+    STM32_SynchronousUSART Serial2(
+            DIO_Pin<STM32_Pin>(Pin_ID::PA_3),
+            DIO_Pin<STM32_Pin>(Pin_ID::PA_2),
+            BaudRate::Baud_38400,
+            WordLength::Bits_8,
+            StopBits::StopBits_1,
+            Parity::None,
+            Mode::TxAndRx,
+            FlowControlMode::None,
+            OverSampling::Sixteen);
 
-  DigitalIn<STM32_DigitalIn> *pButton1 = static_cast<DigitalIn<STM32_DigitalIn>*>(&BUTTON1);
-  DigitalOut<STM32_DigitalOut> *pLed2 = static_cast<DigitalOut<STM32_DigitalOut>*>(&LED2);
+    DigitalIn<STM32_DigitalIn> *pButton1 = static_cast<DigitalIn<STM32_DigitalIn> *>(&BUTTON1);
+    DigitalOut<STM32_DigitalOut> *pLed2 = static_cast<DigitalOut<STM32_DigitalOut> *>(&LED2);
 
-  Multiplier = 1;
-  SleepTime = Multiplier * 200;
-  CPP_HAL::Interrupt buttonInt(RunInterrupt);
-  pButton1->AssignInterrupt(buttonInt, DI_InterruptAssignment::FallingEdge);
+    Multiplier = 1;
+    SleepTime = Multiplier * 200;
+    CPP_HAL::Interrupt buttonInt(RunInterrupt);
+    pButton1->AssignInterrupt(buttonInt, DI_InterruptAssignment::FallingEdge);
 
-  char receivedData[96];
-  std::fill(&receivedData[0], &receivedData[96], 0x00);
+    char receivedData[96];
+    std::fill(&receivedData[0], &receivedData[96], 0x00);
 
-  while (1)
-  {
-    /* USER CODE END WHILE */
-    pLed2->Toggle();
-    
-    HAL_Delay(SleepTime);
-    const char* _out = "LED2 Toggled\r\n";
+    while (1) {
+        pLed2->Toggle();
 
-    Serial2.SendBytes(
-            reinterpret_cast<const uint8_t*>(_out),
-            strlen(_out),
-            std::chrono::milliseconds(10));
+        HAL_Delay(SleepTime);
+        const char *_out = "LED2 Toggled\r\n";
+
+        Serial2.SendBytes(
+                reinterpret_cast<const uint8_t *>(_out),
+                strlen(_out),
+                std::chrono::milliseconds(10));
 /*
     size_t bytesReceived{0};
 
@@ -76,15 +73,14 @@ int main()
         std::fill(&receivedData[0], &receivedData[96], 0x00);
     }
     */
-  }
+    }
 }
 
-void RunInterrupt()
-{
-  Multiplier = ++Multiplier % 5;
-  if(Multiplier == 0)
-    Multiplier++;
-  SleepTime = Multiplier * 200;
+void RunInterrupt() {
+    Multiplier = ++Multiplier % 5;
+    if (Multiplier == 0)
+        Multiplier++;
+    SleepTime = Multiplier * 200;
 }
 
 #ifdef  USE_FULL_ASSERT

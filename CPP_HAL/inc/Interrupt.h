@@ -1,15 +1,15 @@
 #include <functional>
 
 namespace CPP_HAL {
-    class Interrupt
-    {
+    class Interrupt {
     public:
-        Interrupt() { }
+        Interrupt() {}
+
         Interrupt(std::function<void()> functor) :
-            m_Functor(functor)
-        {
+                m_Functor(functor) {
 
         }
+
         ~Interrupt() = default;
 
         virtual std::function<void()> GetFunctor() const { return m_Functor; }

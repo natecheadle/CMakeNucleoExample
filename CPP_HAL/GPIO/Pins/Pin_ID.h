@@ -1,8 +1,7 @@
 #pragma once
 
 namespace CPP_HAL {
-    enum class Pin_ID
-    {
+    enum class Pin_ID {
         PA_0,
         PA_1,
         PA_2,
