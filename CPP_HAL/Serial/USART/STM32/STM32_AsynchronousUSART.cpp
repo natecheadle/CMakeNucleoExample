@@ -1,6 +1,25 @@
 #include "STM32_AsynchronousUSART.h"
 
 namespace CPP_HAL {
+    enum class InterruptID{
+        TransmitDataRegisterEmpty = 0,
+        ClearToSendFlag,
+        TransmissionComplete,
+        ReceivedDataReadyToBeRead,
+        OverrunErrorDetected,
+        IdleLineDetected,
+        ParityError,
+        BreakFlag,
+        NoiseFlag,
+        OverrunError,
+        FramingError,
+        InterruptID_Last
+    };
+
+    bool s_IsConstructed = false;
+    UART_HandleTypeDef* s_HUART = nullptr;
+    std::array<std::function<void()>, size_t(InterruptID::InterruptID_Last)> s_InterruptFunctors;
+
     STM32_AsynchronousUSART::STM32_AsynchronousUSART(
             DIO_Pin<STM32_Pin> rxPin,
             DIO_Pin<STM32_Pin> txPin,
@@ -25,23 +44,48 @@ namespace CPP_HAL {
         if (HAL_UART_Init(&m_HUART) != HAL_OK) {
             //Error_Handler();
         }
+
+        s_InterruptFunctors.at(size_t(InterruptID::TransmissionComplete)) = std::bind(&STM32_AsynchronousUSART::OnTransmissionComplete, this);
+
+        if(m_HUART.Instance == USART2)
+        {
+            HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(USART2_IRQn);
+        }
+        else if(m_HUART.Instance == USART1)
+        {
+            HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(USART1_IRQn);
+        }
+        else if(m_HUART.Instance == USART3)
+        {
+            HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(USART3_IRQn);
+        }
+        s_HUART = &m_HUART;
+        s_IsConstructed = true;
     }
 
-    void STM32_AsynchronousUSART::do_sendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout) {
+    STM32_AsynchronousUSART::~STM32_AsynchronousUSART()
+    {
+        s_IsConstructed = false;
+        HAL_UART_Abort(&m_HUART);
+    }
 
-        HAL_UART_Transmit(
+
+    void STM32_AsynchronousUSART::do_sendBytes(const uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete) {
+        const AsyncMsg* msg = allocateBytes(pData, size, f_OnComplete);
+        HAL_UART_Transmit_IT(
                 &m_HUART,
-                const_cast<uint8_t *>(pData),
-                static_cast<uint16_t>(size),
-                static_cast<uint32_t>(timeout.count()));
+                const_cast<uint8_t*>(msg->Begin),
+                static_cast<uint16_t>(msg->Size));
     }
 
-    void STM32_AsynchronousUSART::do_receiveBytes(unsigned char *pData, size_t size, std::chrono::milliseconds timeout) {
-         HAL_UART_Receive(
+    void STM32_AsynchronousUSART::do_receiveBytes(unsigned char *pData, size_t size, const std::function<void()>& f_OnComplete) {
+        HAL_UART_Receive_IT(
                 &m_HUART,
                 pData,
-                static_cast<uint16_t>(size),
-                static_cast<uint32_t>(timeout.count()));
+                static_cast<uint16_t>(size));
     }
 
     GPIO_InitTypeDef STM32_AsynchronousUSART::populateGPIOStruct(const DIO_Pin<STM32_Pin> &pin) const {
@@ -116,4 +160,32 @@ namespace CPP_HAL {
         }
         return nullptr;
     }
+
+    void STM32_AsynchronousUSART::OnTransmissionComplete()
+    {
+        const AsyncMsg* pPrev = getNextMsg();
+        pPrev->f_OnComplete();
+        popNextMsg();
+        const AsyncMsg* pMsg = getNextMsg();
+        if(pMsg)
+        {
+            HAL_UART_Transmit_IT(
+                    &m_HUART,
+                    const_cast<uint8_t*>(pMsg->Begin),
+                    static_cast<uint16_t>(pMsg->Size));
+        }
+    }
+
+    extern "C" void USART2_IRQHandler(void)
+    {
+        if(s_HUART)
+            HAL_UART_IRQHandler(s_HUART);
+    }
+
+    extern "C" void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+        if(s_IsConstructed)
+            s_InterruptFunctors.at(size_t(InterruptID::TransmissionComplete))();
+    }
 }
+
+

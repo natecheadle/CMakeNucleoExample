@@ -6,39 +6,39 @@
 #include <functional>
 
 namespace CPP_HAL {
-    struct AsyncTransfer{
-        AsyncTransfer() :
-            Begin(nullptr),
-            End(nullptr),
-            IsComplete(false)
-            {}
-
-        AsyncTransfer(const uint8_t* begin, const uint8_t* end, bool isComplete) :
-            Begin(nullptr),
-            End(nullptr),
-            IsComplete(false)
-            {}
-
-        const uint8_t* Begin;
-        const uint8_t* End;
-        bool IsComplete;
-    };
-
     template<class Derived>
     class AsynchronousUSART : public USARTBase{
+    protected:
+        struct AsyncMsg{
+            AsyncMsg() :
+            Begin(nullptr),
+            Size(0) {}
+
+            AsyncMsg(const uint8_t* begin, const size_t size, const std::function<void()>& f_onComplete) :
+            Begin(begin),
+            Size(size),
+            f_OnComplete(f_onComplete) {}
+
+            const uint8_t* Begin;
+            size_t Size;
+            std::function<void()> f_OnComplete;
+        };
+
+    private:
         Shared::lib::StaticQueue<uint8_t, 1024> m_SendBuffer;
-        Shared::lib::StaticQueue<AsyncTransfer, 16> m_SendMessageQueue;
+        Shared::lib::StaticQueue<AsyncMsg, 24> m_MsgBuffer;
 
     public:
-        void SendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout) {
-            static_cast<Derived *>(this)->do_sendBytes(pData, size, timeout);
+        void SendBytes(const uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete) {
+            static_cast<Derived *>(this)->do_sendBytes(pData, size, f_OnComplete);
         }
 
-        void ReceiveBytes(uint8_t *pData, size_t size, std::chrono::milliseconds timeout) {
-            static_cast<Derived *>(this)->do_receiveBytes(pData, size, timeout);
+        void ReceiveBytes(uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete) {
+            static_cast<Derived *>(this)->do_receiveBytes(pData, size, f_OnComplete);
         }
 
     protected:
+
         AsynchronousUSART(
                 BaudRate baudRate,
                 WordLength wordLength,
@@ -49,42 +49,47 @@ namespace CPP_HAL {
                 OverSampling overSampling) :
                 USARTBase(baudRate, wordLength, stopBits, parity, mode, flowControlMode, overSampling){
         }
-
-        const AsyncTransfer* allocateBytes(const uint8_t *pData, size_t size)
+        const AsyncMsg* getNextMsg()
         {
-            if(m_SendMessageQueue.Full())
-                return nullptr;
+            return m_MsgBuffer.Size() ?
+                m_MsgBuffer.Front() :
+                nullptr;
+        }
 
-            AsyncTransfer nextMsg;
-            nextMsg.Begin = m_SendBuffer.Back();
-            for(size_t i; i< size; ++i)
+        void popNextMsg()
+        {
+            if(m_MsgBuffer.Size())
+            {
+                const AsyncMsg* pNxt = m_MsgBuffer.Front();
+                for(size_t i = 0; i < pNxt->Size; ++i)
+                    m_SendBuffer.Pop();
+
+                m_MsgBuffer.Pop();
+            }
+
+
+        }
+
+
+        const AsyncMsg* allocateBytes(const uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete)
+        {
+            const AsyncMsg* returnVal = m_MsgBuffer.Back();
+            for(size_t i = 0; i< size; ++i)
             {
                 m_SendBuffer.Push(pData[i]);
+
+                if(i == 0)
+                    m_MsgBuffer.Push(AsyncMsg(m_SendBuffer.Back(), size, f_OnComplete));
             }
-            nextMsg.End = m_SendBuffer.Back();
 
-            m_SendMessageQueue.Push(nextMsg);
-
-            return m_SendMessageQueue.Back();
+            return returnVal;
         }
 
         bool bytesToSend() { return !m_SendBuffer.Empty(); }
 
-        uint8_t getNextByte()
-        {
-            const uint8_t* nextByte = m_SendBuffer.Front();
-            AsyncTransfer* nextTransfer = m_SendMessageQueue.Front();
+        virtual void do_sendBytes(const uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete) = 0;
 
-            uint8_t rtrnVal = *nextByte;
-            m_SendBuffer.Pop();
-            nextTransfer->IsComplete = true;
-            return rtrnVal;
-        }
-
-
-        virtual void do_sendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout) = 0;
-
-        virtual void do_receiveBytes(uint8_t *pData, size_t size, std::chrono::milliseconds timeout) = 0;
+        virtual void do_receiveBytes(uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete) = 0;
 
     };
 }

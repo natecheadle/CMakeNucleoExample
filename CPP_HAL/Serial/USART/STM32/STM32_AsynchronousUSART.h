@@ -24,16 +24,20 @@ namespace CPP_HAL {
                 FlowControlMode flowControlMode,
                 OverSampling overSampling);
 
+        ~STM32_AsynchronousUSART();
+
     protected:
         virtual GPIO_InitTypeDef populateGPIOStruct(const DIO_Pin<STM32_Pin> &pin) const;
 
         virtual UART_HandleTypeDef populateUARTStruct() const;
 
-        void do_sendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout);
+        void do_sendBytes(const uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete) final;
 
-        void do_receiveBytes(uint8_t *pData, size_t size, std::chrono::milliseconds timeout);
+        void do_receiveBytes(uint8_t *pData, size_t size, const std::function<void()>& f_OnComplete) final;
 
     private:
+        void OnTransmissionComplete();
+
         static USART_TypeDef *GetUSARTInstance(Pin_ID rxPin, Pin_ID txPin);
 
         UART_HandleTypeDef m_HUART;

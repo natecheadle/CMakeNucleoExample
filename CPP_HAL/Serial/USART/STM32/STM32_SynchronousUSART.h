@@ -27,9 +27,9 @@ namespace CPP_HAL {
 
         virtual UART_HandleTypeDef populateUARTStruct() const;
 
-        bool do_sendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout);
+        bool do_sendBytes(const uint8_t *pData, size_t size, std::chrono::milliseconds timeout) final;
 
-        bool do_receiveBytes(uint8_t *pData, size_t size, std::chrono::milliseconds timeout);
+        bool do_receiveBytes(uint8_t *pData, size_t size, std::chrono::milliseconds timeout) final;
 
     private:
         static USART_TypeDef *GetUSARTInstance(Pin_ID rxPin, Pin_ID txPin);

@@ -8,13 +8,16 @@
 using namespace CPP_HAL;
 
 void RunInterrupt();
+void OnComplete();
 
 unsigned int SleepTime;
 unsigned int Multiplier;
 
+DigitalOut<STM32_DigitalOut> *pLed2;
+
 int main() {
     STM32_DigitalOut LED2(DO_Pin<STM32_Pin>(Pin_ID::PA_5));
-    STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
+    //STM32_DigitalIn BUTTON1(DI_Pin<STM32_Pin>(Pin_ID::PC_13));
     STM32_AsynchronousUSART Serial2(
             DIO_Pin<STM32_Pin>(Pin_ID::PA_3),
             DIO_Pin<STM32_Pin>(Pin_ID::PA_2),
@@ -26,27 +29,27 @@ int main() {
             FlowControlMode::None,
             OverSampling::Sixteen);
 
-    DigitalIn<STM32_DigitalIn> *pButton1 = static_cast<DigitalIn<STM32_DigitalIn> *>(&BUTTON1);
-    DigitalOut<STM32_DigitalOut> *pLed2 = static_cast<DigitalOut<STM32_DigitalOut> *>(&LED2);
+    //DigitalIn<STM32_DigitalIn> *pButton1 = static_cast<DigitalIn<STM32_DigitalIn> *>(&BUTTON1);
+    pLed2 = static_cast<DigitalOut<STM32_DigitalOut> *>(&LED2);
 
     Multiplier = 1;
     SleepTime = Multiplier * 200;
     CPP_HAL::Interrupt buttonInt(RunInterrupt);
-    pButton1->AssignInterrupt(buttonInt, DI_InterruptAssignment::FallingEdge);
+    //pButton1->AssignInterrupt(buttonInt, DI_InterruptAssignment::FallingEdge);
 
     char receivedData[96];
     std::fill(&receivedData[0], &receivedData[96], 0x00);
 
     while (1) {
-        pLed2->Toggle();
+        //pLed2->Toggle();
 
         HAL_Delay(SleepTime);
-        const char *_out = "LED2 Toggled\r\n";
+        const char *_out = "Hello Async World!\r\n";
 
         Serial2.SendBytes(
                 reinterpret_cast<const uint8_t *>(_out),
                 strlen(_out),
-                std::chrono::milliseconds(10));
+                std::function<void()>(OnComplete));
 /*
     size_t bytesReceived{0};
 
@@ -75,6 +78,11 @@ int main() {
     */
     }
 }
+
+void OnComplete() {
+    pLed2->Toggle();
+}
+
 
 void RunInterrupt() {
     Multiplier = ++Multiplier % 5;
