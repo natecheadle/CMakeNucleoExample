@@ -2,8 +2,7 @@ project("CMakeNucleoExample")
 
 cmake_minimum_required(VERSION 3.15.3)
 
-add_subdirectory(STM32_F3/cmsis)
-add_subdirectory(STM32_F3/hal)
+add_subdirectory(STM32_Static_Lib/STM32_F3)
 add_subdirectory(CPP_HAL)
 add_subdirectory(Shared/lib)
 
@@ -30,7 +29,7 @@ set(EXECUTABLE ${PROJECT_NAME}.out)
 add_executable(${EXECUTABLE} ${STM32CUBEMX_GENERATED_FILES})
 
 target_include_directories(${EXECUTABLE} PRIVATE inc)
-target_link_libraries(${EXECUTABLE} cmsis st_hal dsp CPP_HAL)
+target_link_libraries(${EXECUTABLE} STM32_F3_CMSIS STM32_F3_HAL STM32_F3_DSP CPP_HAL)
         
 target_link_options(${EXECUTABLE} PRIVATE
         -T${CMAKE_SOURCE_DIR}/src/STM32F303RETx_FLASH.ld

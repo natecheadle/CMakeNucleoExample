@@ -10,7 +10,7 @@ set(CppHalSrcs
         Serial/USART/STM32/STM32_AsynchronousUSART.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${CppHalSrcs})
-target_link_libraries(${PROJECT_NAME} st_hal Shared_Lib)
+target_link_libraries(${PROJECT_NAME} STM32_F3_HAL Shared_Lib)
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/inc

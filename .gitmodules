@@ -1,3 +1,6 @@
 [submodule "Shared"]
 	path = Shared
 	url = https://github.com/natecheadle/Shared.git
+[submodule "STM32_Static_Lib"]
+	path = STM32_Static_Lib
+	url = https://github.com/natecheadle/STM32_Static_Lib.git
